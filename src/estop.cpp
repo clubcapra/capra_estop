@@ -48,7 +48,7 @@ void initializeGPIO() {
 }
 
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "markhor_estop", ros::init_options::NoSigintHandler);
+    ros::init(argc, argv, "capra_estop", ros::init_options::NoSigintHandler);
     ros::NodeHandle nh;
 
     initializeGPIO();
