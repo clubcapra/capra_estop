@@ -31,9 +31,9 @@ bool toggleEstopDisable(std_srvs::Trigger::Request &req, std_srvs::Trigger::Resp
 }
 
 /**
- * This function is called before the node is killed. It disable the estop and shutdown the node. 
+ * This function is called before the node is killed. It disables the estop and shutdown the node. 
 */
-void mySigintHandler(int sig)
+void sigintShutdownNode(int sig)
 {
     gpioSetValue(ESTOP_PIN, 0);
     ros::shutdown();
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
     initializeGPIO();
 
-    signal(SIGINT, mySigintHandler);
+    signal(SIGINT, sigintShutdownNode);
 
     ros::ServiceServer serviceEnable = nh.advertiseService("estop_enable", toggleEstopEnable);
     ros::ServiceServer serviceDisable = nh.advertiseService("estop_disable", toggleEstopDisable);
