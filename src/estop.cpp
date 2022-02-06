@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "std_srvs/Trigger.h"
-#include "JetsonXavierGPIO/jetsonGPIO.c"
+#include "JetsonXavierGPIO/jetsonGPIO.h"
 #include <signal.h>
 
 bool estop_value = true; //default value for the Estop.

@@ -1,3 +1,0 @@
-[submodule "include/JetsonXavierGPIO"]
-	path = include/JetsonXavierGPIO
-	url = https://github.com/clubcapra/JetsonXavierGPIO.git
