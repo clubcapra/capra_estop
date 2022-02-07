@@ -1,4 +1,4 @@
-project(markhor_estop)
+project(capra_estop)
 
 cmake_minimum_required(VERSION 3.1)
 add_definitions(-std=c++14)
