@@ -2,6 +2,7 @@
 #include "std_srvs/Trigger.h"
 #include "JetsonXavierGPIO/jetsonGPIO.h"
 #include <signal.h>
+#include <ros/xmlrpc_manager.h>
 
 bool estop_value = true; //default value for the Estop.
 const jetsonXavierGPIONumber ESTOP_PIN = jetsonXavierGPIONumber::gpio428;
@@ -40,6 +41,24 @@ void sigintShutdownNode(int sig)
 }
 
 /**
+ * This function is called before the node is killed using rosnode kill. It disables the estop and shutdown the node. 
+*/
+void shutdownCallback(XmlRpc::XmlRpcValue& params, XmlRpc::XmlRpcValue& result)
+{
+  int num_params = 0;
+  if (params.getType() == XmlRpc::XmlRpcValue::TypeArray)
+    num_params = params.size();
+  if (num_params > 1)
+  {
+    std::string reason = params[1];
+    ROS_WARN("Shutdown request received. Reason: [%s]", reason.c_str());
+    gpioSetValue(ESTOP_PIN, 0);
+  }
+
+  result = ros::xmlrpc::responseInt(1, "", 0);
+}
+
+/**
  * Initialize the configuration to control the GPIO pin.
  */
 void initializeGPIO()
@@ -55,6 +74,9 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
 
     initializeGPIO();
+
+    ros::XMLRPCManager::instance()->unbind("shutdown");
+    ros::XMLRPCManager::instance()->bind("shutdown", shutdownCallback);
 
     signal(SIGINT, sigintShutdownNode);
 
