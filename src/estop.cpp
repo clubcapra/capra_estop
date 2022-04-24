@@ -88,7 +88,7 @@ int main(int argc, char **argv)
     ros::ServiceServer serviceEnable = nh.advertiseService("estop_enable", toggleEstopEnable);
     ros::ServiceServer serviceDisable = nh.advertiseService("estop_disable", toggleEstopDisable);
     
-    ros::Rate rate(5); // ROS Rate at 5Hz
+    ros::Rate rate(100); // ROS Rate at 100Hz
 
     // Do our own spin loop
     while (!g_request_shutdown)
