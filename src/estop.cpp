@@ -6,6 +6,7 @@
 
 bool estop_value = true; //default value for the Estop.
 const jetsonXavierGPIONumber ESTOP_PIN = jetsonXavierGPIONumber::gpio428;
+const int ros_spin_rate = 100;
 
 // Signal-safe flag for whether shutdown is requested
 sig_atomic_t volatile g_request_shutdown = 0;
@@ -50,8 +51,12 @@ void sigintShutdownNode(int sig)
 void shutdownCallback(XmlRpc::XmlRpcValue& params, XmlRpc::XmlRpcValue& result)
 {
   int num_params = 0;
+  
   if (params.getType() == XmlRpc::XmlRpcValue::TypeArray)
+  {
     num_params = params.size();
+  }
+
   if (num_params > 1)
   {
     std::string reason = params[1];
@@ -88,7 +93,7 @@ int main(int argc, char **argv)
     ros::ServiceServer serviceEnable = nh.advertiseService("estop_enable", toggleEstopEnable);
     ros::ServiceServer serviceDisable = nh.advertiseService("estop_disable", toggleEstopDisable);
     
-    ros::Rate rate(100); // ROS Rate at 100Hz
+    ros::Rate rate(ros_spin_rate); // ROS Rate at 100Hz
 
     // Do our own spin loop
     while (!g_request_shutdown)
