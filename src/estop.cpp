@@ -105,7 +105,7 @@ int main(int argc, char **argv)
     ros::XMLRPCManager::instance()->bind("shutdown", shutdownCallback);
 
     signal(SIGINT, sigintShutdownNode);
-    e_stop_status_pub = nh.advertise<std_msgs::Int64>("e_stop_is_pressed",1000);
+    e_stop_status_pub = nh.advertise<std_msgs::Int64>("estop_status",1000);
 
     ros::ServiceServer serviceEnable = nh.advertiseService("estop_enable", toggleEstopEnable);
     ros::ServiceServer serviceDisable = nh.advertiseService("estop_disable", toggleEstopDisable);
@@ -115,6 +115,7 @@ int main(int argc, char **argv)
     // Do our own spin loop at the given rate
     while (!g_request_shutdown)
     {
+      advertiseEstopStatus();
       ros::spinOnce();
       rate.sleep();
     }
