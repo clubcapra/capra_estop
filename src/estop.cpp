@@ -26,11 +26,11 @@ void advertiseEstopStatus()
 }
 
 /**
- * Call back function for to toggle the Estop pin. This will change the logic level on the pin and enable the robot.
+ * Call back function to toggle the Estop pin. This will change the logic level on the pin and enable the robot drives.
  */
 bool toggleEstopEnable(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
 {
-    res.message = "successfully toggle estop to on";
+    res.message = "successfully toggled estop to on";
     gpioSetValue(ESTOP_PIN, 1);
     res.success = static_cast<unsigned char>(true);
     advertiseEstopStatus();
@@ -38,11 +38,11 @@ bool toggleEstopEnable(std_srvs::Trigger::Request &req, std_srvs::Trigger::Respo
 }
 
 /**
- * Call back function for to toggle the Estop pin. This will change the logic level on the pin and disable the robot drives.
+ * Call back function to toggle the Estop pin. This will change the logic level on the pin and disable the robot drives.
  */
 bool toggleEstopDisable(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
 {
-    res.message = "successfully toggle estop to off";
+    res.message = "successfully toggled estop to off";
 static ros::Publisher e_stop_status_pub;
     gpioSetValue(ESTOP_PIN, 0);
     res.success = static_cast<unsigned char>(true);
@@ -51,7 +51,7 @@ static ros::Publisher e_stop_status_pub;
 }
 
 /**
- * This function is called before the node is killed. It disables the estop and shutdown the node. 
+ * This function is called before the node is killed. It disables the estop and shutdowns the node. 
 */
 void sigintShutdownNode(int sig)
 {
@@ -61,7 +61,7 @@ void sigintShutdownNode(int sig)
 }
 
 /**
- * This function is called before the node is killed using rosnode kill. It disables the estop and shutdown the node. 
+ * This function is called before the node is killed using rosnode kill. It disables the estop and shutdowns the node. 
 */
 void shutdownCallback(XmlRpc::XmlRpcValue& params, XmlRpc::XmlRpcValue& result)
 {
@@ -110,9 +110,9 @@ int main(int argc, char **argv)
     ros::ServiceServer serviceEnable = nh.advertiseService("estop_enable", toggleEstopEnable);
     ros::ServiceServer serviceDisable = nh.advertiseService("estop_disable", toggleEstopDisable);
     
-    ros::Rate rate(ros_spin_rate); // ROS Rate at 100Hz
+    ros::Rate rate(ros_spin_rate); // ROS Rate at constant rate
 
-    // Do our own spin loop
+    // Do our own spin loop at the given rate
     while (!g_request_shutdown)
     {
       ros::spinOnce();
