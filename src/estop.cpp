@@ -13,14 +13,14 @@ const int ros_spin_rate = 100;
 sig_atomic_t volatile g_request_shutdown = 0;
 
 const jetsonXavierGPIONumber ESTOP_STATUS_PIN=jetsonXavierGPIONumber::gpio256;
-unsigned int* value;
 static ros::Publisher e_stop_status_pub;
 
 void advertiseEstopStatus()
 {
+    unsigned int * status;
     std_msgs::Int64 msg;
-    gpioGetValue(ESTOP_STATUS_PIN,value);
-    msg.data = (*value);  
+    gpioGetValue(ESTOP_STATUS_PIN, status);
+    msg.data = static_cast<int64_t>(*status);  
     e_stop_status_pub.publish(msg);
 
 }
@@ -43,7 +43,7 @@ bool toggleEstopEnable(std_srvs::Trigger::Request &req, std_srvs::Trigger::Respo
 bool toggleEstopDisable(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
 {
     res.message = "successfully toggled estop to off";
-static ros::Publisher e_stop_status_pub;
+    static ros::Publisher e_stop_status_pub;
     gpioSetValue(ESTOP_PIN, 0);
     res.success = static_cast<unsigned char>(true);
     advertiseEstopStatus();
