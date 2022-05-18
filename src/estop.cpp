@@ -17,10 +17,12 @@ static ros::Publisher e_stop_status_pub;
 
 void advertiseEstopStatus()
 {
-    unsigned int * status;
+    unsigned int status = 0U;
+    unsigned int * value;
+    value = &status;
     std_msgs::Int64 msg;
-    gpioGetValue(ESTOP_STATUS_PIN, status);
-    msg.data = static_cast<int64_t>(*status);  
+    gpioGetValue(ESTOP_STATUS_PIN, value);
+    msg.data = static_cast<int64_t>(status);  
     e_stop_status_pub.publish(msg);
 
 }
@@ -105,7 +107,7 @@ int main(int argc, char **argv)
     ros::XMLRPCManager::instance()->bind("shutdown", shutdownCallback);
 
     signal(SIGINT, sigintShutdownNode);
-    e_stop_status_pub = nh.advertise<std_msgs::Int64>("estop_status",1000);
+    e_stop_status_pub = nh.advertise<std_msgs::Int64>("estop_status", 1, true);
 
     ros::ServiceServer serviceEnable = nh.advertiseService("estop_enable", toggleEstopEnable);
     ros::ServiceServer serviceDisable = nh.advertiseService("estop_disable", toggleEstopDisable);
